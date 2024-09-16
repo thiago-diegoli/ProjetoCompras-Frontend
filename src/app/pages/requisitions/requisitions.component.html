@@ -1,0 +1,118 @@
+<app-header-client></app-header-client>
+<section class="bg-white pt-28 mb-14">
+    <div class="px-4 mx-auto max-w-4xl">
+      <h2 class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-3xl">Faça a Requisição do Produto Desejado</h2>
+        <form id="requisicao" #requisicaoForm="ngForm">
+            <div>
+              <div class="flex flex-wrap mb-2">
+                <div class="w-full md:w-3/5 md:pr-3 lg:pr-3 mb-6 md:mb-0">
+                    <label for="nome" class="block mb-2 text-sm font-medium text-gray-900">Nome*</label>
+                    <input type="text" name="nome" id="nome" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Digite o nome do produto">
+                </div>
+                <div class="w-full md:w-2/5 md:pl-3 lg:pl-3 mb-6 md:mb-0">
+                  <label for="tipo" class="block text-sm font-medium text-gray-700 mb-2 ">Tipo*</label>
+                  <select id="tipo" name="tipo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" (change)="onTipoChange($event)">
+                    <option value="material-de-consumo">Material de Consumo</option>
+                    <option value="material-permanente">Material Permanente</option>
+                    <option value="hibrido">Híbrido</option>
+                    <option value="outro">Outro</option>
+                    <option value="nao-sei">Não sei (Pesquisar na BEC)</option>
+                  </select>
+                </div>
+             </div>
+                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+                <div *ngIf="mostrarPesquisaBec" id="pesquisaBec" class="relative my-4">
+                  <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                  </div>
+                  <input (input)="handleInput($event)" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" type="search" id="produtoDesejadoInput" placeholder="Digite o nome do produto...">
+                  <ul *ngIf="sugestoes.length > 0" class="absolute top-full left-0 z-10 bg-white border border-gray-300 rounded-lg shadow-md mt-2 w-full suggestions">
+                    <li *ngFor="let sugestao of sugestoes" (click)="selectSuggestion(sugestao)">
+                      {{ sugestao }}
+                    </li>
+                  </ul>
+                  <button id="pesquisarItem" (click)="pesquisarProduto()" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Pesquisar</button>
+                </div>
+                  <div *ngIf="informacoes" id="informacoes" class="flex flex-col w-full leading-1.5 p-4 mb-2 border-blue-200 border bg-blue-100 rounded-xl text-sm">
+                    <p class="font-semibold">Informações do produto</p>
+                    <p id="p1">{{ informacoes.material }}</p>
+                    <p id="p2">{{ informacoes.codigoMaterial }}</p>
+                  </div>
+
+                <div class="flex flex-wrap">
+                    <div class="w-full md:w-1/2 md:pr-3 lg:pr-3 mb-6 md:mb-0">
+                        <label for="quantidade" class="block mb-2 text-sm font-medium text-gray-900">Quantidade*</label>
+                        <input type="number" name="quantidade" id="quantidade" min="1"  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Digite a quantidade que precisa">
+                    </div>
+                    <div class="w-full md:w-1/2 md:pl-3 lg:pl-3 mb-6 md:mb-0">
+                      <label for="categoria" class="block text-sm font-medium text-gray-700 mb-2 ">
+                        Categoria*
+                      </label>
+                      <select id="categoria" name="categoria" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="material-de-escritorio">Material de Escritório</option>
+                        <option value="equipamentos-de-informatica">Equipamentos de Informática</option>
+                        <option value="material-de-limpeza">Material de Limpeza</option>
+                        <option value="materiais-didaticos-pedagogicos">Materiais Didáticos e Pedagógicos</option>
+                        <option value="material-de-escritorio-especializado">Material de Escritório Especializado</option>
+                        <option value="equipamentos-de-laboratorio">Equipamentos de Laboratório</option>
+                        <option value="material-de-construcao-manutencao">Material de Construção e Manutenção</option>
+                        <option value="moveis-equipamentos">Móveis e Equipamentos</option>
+                        <option value="material-de-higiene-saude">Material de Higiene e Saúde</option>
+                        <option value="materiais-para-eventos-projetos-especiais">Materiais para Eventos e Projetos Especiais</option>
+                        <option value="materiais-esportivos-educacao-fisica">Materiais Esportivos e de Educação Física</option>
+                        <option value="recursos-tecnologicos-multimidia">Recursos Tecnológicos e Multimídia</option>
+                        <option value="material-de-arte-design">Material de Arte e Design</option>
+                        <option value="material-de-jardinagem-paisagismo">Material de Jardinagem e Paisagismo</option>
+                        <option value="material-de-seguranca-prevencao">Material de Segurança e Prevenção</option>
+                        <option value="outro">Outro</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="sm:col-span-2 mt-4">
+                    <label for="descricao" class="block mb-2 text-sm font-medium text-gray-900">Descrição</label>
+                    <textarea id="descricao" name="descricao" rows="8"  class="resize-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-400 focus:border-blue-400" placeholder="Especifique a finalidade, qual modelo, cor, tamanho etc."></textarea>
+                </div>
+            </div>
+            <div class="flex items-center justify-center sm:place-items-start sm:justify-normal">
+                <button (click)="onSubmit()" type="submit" id="submitBtn" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-600 rounded-lg focus:ring-4 focus:ring-blue-100">
+                    Enviar
+                </button>
+
+                <div id="fill-all" class="hidden flex flex-col w-full inline-flex items-center px-5 py-2.5 mt-4 ml-5 sm:mt-6 border-red-200 border bg-red-100 rounded-xl text-sm">
+                  <p>Preencha todos os campos obrigatórios</p>
+                </div>
+
+                <div id="success" class="hidden flex flex-col w-full inline-flex items-center px-5 py-2.5 mt-4 ml-5 sm:mt-6 border-green-200 border bg-green-100 rounded-xl text-sm">
+                  <p>Produto solicitado com sucesso!</p>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<div id="popup-modal" tabindex="-1" class="hidden fixed inset-0 z-50 flex justify-center items-center">
+  <div class="relative p-4 w-full max-w-md max-h-full">
+      <div class="relative border-2 bg-white rounded-lg shadow">
+          <button (click)="closeConfirmModal()" type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="popup-modal">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+              <span class="sr-only">Fechar Modal</span>
+          </button>
+          <div class="p-4 md:p-5 text-center">
+              <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+              </svg>
+              <h3 class="mb-5 text-lg font-normal text-gray-500">Confirmar essa solicitação?</h3>
+              <button (click)="confirmarCadastro()" data-modal-hide="popup-modal" type="button" class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                  Sim, confirmar
+              </button>
+              <button (click)="closeConfirmModal()" data-modal-hide="popup-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Não, cancelar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
